@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import {ref} from "vue";
+import SidebarComponent from "@/components/SidebarComponent.vue";
+
+const visible = ref(false)
+
+
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
 </template>
