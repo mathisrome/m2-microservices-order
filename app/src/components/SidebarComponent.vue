@@ -83,13 +83,13 @@ const structuralItems = ref([
     <Transition>
       <ul v-if="showLinks">
         <li>
-          <RouterLink to="/menu">
+          <RouterLink to="/order">
             <i class="pi pi-home"></i>
-            <span class="ml-2">Menugfdsg a</span>
+            <span class="ml-2">Commander</span>
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="">
+          <RouterLink to="/">
             <i class="pi pi-users"></i>
             <span class="ml-2">Clients</span>
 

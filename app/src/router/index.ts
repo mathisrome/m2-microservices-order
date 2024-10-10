@@ -3,7 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
 import {useAuthStore} from "@/stores/auth";
 import {computed} from "vue";
-import MenuView from "@/views/MenuView.vue";
+import OrderView from "@/views/OrderView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,23 +19,23 @@ const router = createRouter({
             component: LoginView
         },
         {
-            path: '/menu',
-            name: 'menu',
-            component: MenuView
+            path: '/order',
+            name: 'order',
+            component: OrderView
         },
     ]
 })
 
-router.beforeEach(async (to, from, next) => {
-    const authStore = useAuthStore()
-    const user = computed(() => authStore.user)
-    await authStore.fetchProfile()
+// router.beforeEach(async (to, from, next) => {
+//     const authStore = useAuthStore()
+//     const user = computed(() => authStore.user)
+//     await authStore.fetchProfile()
 
-    if (to.name !== 'login' && user.value === null) {
-        next({name: 'login'})
-    } else {
-        next()
-    }
-})
+//     if (to.name !== 'login' && user.value === null) {
+//         next({name: 'login'})
+//     } else {
+//         next()
+//     }
+// })
 
 export default router
