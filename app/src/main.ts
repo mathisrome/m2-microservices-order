@@ -29,6 +29,7 @@ import Message from "primevue/message";
 import ProgressSpinner from "primevue/progressspinner";
 import Paginator from "primevue/paginator";
 import AutoComplete from "primevue/autocomplete";
+import Carousel from 'primevue/carousel';
 
 const app = createApp(App)
 
@@ -72,6 +73,7 @@ app.component("Message", Message)
 
 // Media
 app.component("Image", Image)
+app.component("Carousel", Carousel)
 
 // Misc
 app.component("Avatar", Avatar)
