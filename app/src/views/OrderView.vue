@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 const loading = ref(false);
+const cartItems = ref([]); 
 
 const load = () => {
     loading.value = true;
@@ -116,40 +117,153 @@ const categories = [
         ],
     },
 ];
+const addToCart = (item: any) => {
+    console.log("Ajout de l'article au panier:", item); // Pour vérifier ce qui est ajouté
+    cartItems.value.push(item); // Ajoute l'article au panier
+    console.log("État actuel du panier:", cartItems.value); // Pour voir le contenu du panier
+};
+
+const totalPrice = () => {
+    return cartItems.value.reduce((total, item) => {
+        // Enlève le symbole € et convertit en float
+        const price = parseFloat(item.price.replace('€', '').trim());
+        return total + price;
+    }, 0).toFixed(2);
+};
+
+const removeFromCart = (index: number) => {
+    cartItems.value.splice(index, 1);
+};
+
 </script>
 
 <template>
-    <section class="menu-container">
-        <div class="menu-content">
-            <h1 class="menu-title">Menu</h1>
+    <div class="container">
+        <section class="menu-container">
+            <div class="menu-content">
+                <h1 class="menu-title">Menu</h1>
 
-            <div v-for="category in categories" :key="category.title" class="menu-category">
-                <h2 class="category-title">{{ category.title }}</h2>
-                <div class="grid">
-                    <div v-for="item in category.items" :key="item.alt" class="card">
-                        <div class="card-content">
-                            <div class="text-container">
-                                <h3 class="recipe-title">{{ item.title }}</h3>
-                                <p class="description">{{ item.description }}</p>
-                                <p class="price">{{ item.price }}</p>
+                <div v-for="category in categories" :key="category.title" class="menu-category">
+                    <h2 class="category-title">{{ category.title }}</h2>
+                    <div class="grid">
+                        <div 
+                            v-for="item in category.items" 
+                            :key="item.alt" 
+                            class="card"
+                        >
+                            <div class="card-content">
+                                <div class="text-container">
+                                    <h3 class="recipe-title">{{ item.title }}</h3>
+                                    <p class="description">{{ item.description }}</p>
+                                    <p class="price">{{ item.price }}</p>
+                                    <button @click="addToCart(item)" class="btn btn-secondary">Ajouter au panier</button>
+                                </div>
+                                <img :src="item.src" :alt="item.alt" class="menu-image" />
                             </div>
-                            <img :src="item.src" :alt="item.alt" class="menu-image" />
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
+        <aside class="cart-container">
+            <h2>Mon Panier</h2>
+            <ul>
+                <li v-for="(item, index) in cartItems" :key="index" class="cart-item">
+                    <div class="cart-item-details">
+                        <span class="cart-item-title">{{ item.title }}</span>
+                        <span class="cart-item-price">{{ item.price }}</span>
+                        <button @click="removeFromCart(index)" class="btn btn-secondary">Supprimer</button>
+                    </div>
+                </li>
+            </ul>
+            <p class="cart-total">Total: {{ totalPrice() }}€</p>
             <div class="button-container">
-                <button @click="load" :disabled="loading" class="btn btn-primary mt-4">
-                    <span v-if="loading">Chargement...</span>
-                    <span v-else>Commander</span>
-                </button>
-            </div>
-        </div>
-    </section>
+                    <button @click="load" :disabled="loading" class="btn btn-primary mt-4">
+                        <span v-if="loading">Chargement...</span>
+                        <span v-else>Commander</span>
+                    </button>
+                </div>
+        </aside>
+
+
+
+    </div>
 </template>
 
 <style scoped>
+.container {
+    display: flex;
+}
+
+.cart-container {
+    position: sticky;
+    top: 20px;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    margin-left: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-image {
+    width: 50px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.cart-item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-item-title {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.cart-item-price {
+    color: #28a745;
+}
+
+.cart-total {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #007bff;
+}
+
+
+.cart-container {
+  position: sticky;
+  top: 20px;
+  width: 250px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  margin-left: 20px;
+  height: fit-content;
+  display: block; /* Assurez-vous que le panier est visible */
+  color: black
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -212,6 +326,8 @@ const categories = [
     width: 100%;
     box-sizing: border-box;
     border-radius: 10px;
+    flex: 1;
+    overflow-y: auto; /* Permet de défiler le menu */
 }
 
 .menu-content {
@@ -264,6 +380,20 @@ const categories = [
 .btn:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+.btn-secondary {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #6c757d;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
 }
 
 .mt-4 {
